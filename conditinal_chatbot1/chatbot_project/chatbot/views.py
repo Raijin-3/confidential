@@ -5,7 +5,7 @@ def chat_question(request):
     return render(request, "chat.html")
 
 def chat(request, button_id):
-    # Define responses for each button ID
+    # Define responses for each button ID   
     if button_id == 'how-solar-works':
         response_text = """Vera: Solar works by taking the sun's energy and converting it into usable power for your home. 
         This is done through the solar cells in the panels converting AC power into DC, usable power for your home, which is converted
@@ -17,7 +17,7 @@ def chat(request, button_id):
         # Check if the user responded with "yes"
         
         user_response = request.GET.get('chat-input', '').lower().strip()
-        if user_response == 'yes':
+        if button_id=="how-solar-works" and user_response == 'yes':
             response_text = """Sure, I am happy to help with that. First, I will need a little bit of information about your home. 
             What is the address of your home?"""
 

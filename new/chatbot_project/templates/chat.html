@@ -1,0 +1,410 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarBot Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chatbot-window {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Ensure content doesn't overflow */
+        }
+
+        .welcome-message {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .chat-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #send-btn {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        #send-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .chat-messages {
+            height: 400px; /* Adjust the height as needed */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .user-message {
+            color: #007bff;
+            text-align: right;
+        }
+
+        .chatbot-message {
+            color: #4CAF50;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-window">
+        <h2>Vera Personal Assistant</h2>
+        <div class="welcome-message">
+            <p>Hi, I’m Vera, your SolarBot that can answer all of your questions surrounding solar for your home. I am a 3rd party, reliable source without any ties to a specific solar company. I am here to get you the most accurate, fact-checked information about solar and help you determine if it makes sense for you! How can I help you today?</p>
+        </div>
+        <div class="buttons-container">
+            <button class="btn" id="how-solar-works">How does solar work?</button>
+            <button class="btn" id="save-money">Will Solar save me money on my electric bill?</button>
+            <button class="btn" id="solar-is-free">Is solar really free?</button>
+            <button class="btn" id="other">Other</button>
+
+        </div>
+        <div class="chat-messages">
+        </div>
+
+        <div class="">
+            <p id="response-text"></p>
+        </div>
+
+        <div class="chat-bar">
+            <input type="text" id="chat-input" placeholder="Type your message here...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const buttonId = this.id;
+                    fetch(`/chat/${buttonId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displayMessage(data.response, 'chatbot');
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+            });
+
+            // const sendBtn = document.getElementById('send-btn');
+            // sendBtn.addEventListener('click', function() {
+            //     const chatInput = document.getElementById('chat-input');
+            //     if (chatInput.value.trim() !== '') {
+            //         // Display the user's message
+            //         displayMessage(chatInput.value, 'user');
+            //         // Simulate an AI response
+            //         simulateAiResponse(chatInput.value);
+            //         chatInput.value = ''; // Clear the input field
+            //     }
+            // });
+        });
+
+        function displayMessage(message, sender) {
+            const chatMessages = document.querySelector('.chat-messages');
+            const messageElement = document.createElement('p');
+            messageElement.textContent = message;
+            if (sender === 'user') {
+                messageElement.classList.add('user-message');
+            } else {
+                messageElement.classList.add('chatbot-message');
+            }
+            chatMessages.appendChild(messageElement);
+
+            // Automatically scroll to the bottom of the chat messages container
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function simulateAiResponse(userMessage) {
+            // This is a simple echo response. Replace this with your AI logic or API call.
+            const response = `You said: ${userMessage}`;
+            displayMessage(response, 'chatbot');
+        }
+    </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#send-btn').click(function(){
+            var message = $('#chat-input').val();
+            if (message.toLowerCase() === 'yes') {
+                $.ajax({
+                    type: 'GET',  // Changed to GET method
+                    url: 'how-solar-works/', // Change this to your server endpoint
+                    data: { message: message },
+                    success: function(response) {
+                        // Update content of <p> tag with the response
+                            $('#response-text').text(response.response);
+                        },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html> -->
+
+
+<!DOCTY<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarBot Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chatbot-window {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Ensure content doesn't overflow */
+        }
+
+        .welcome-message {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .chat-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #send-btn {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        #send-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .chat-messages {
+            height: 400px; /* Adjust the height as needed */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .user-message {
+            color: #007bff;
+            text-align: right;
+        }
+
+        .chatbot-message {
+            color: #4CAF50;
+            text-align: left;
+        }
+    </style>
+    <!-- Include jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="chatbot-window">
+        <h2>Vera Personal Assistant</h2>
+        <div class="welcome-message">
+            <p>Hi, I’m Vera, your SolarBot that can answer all of your questions surrounding solar for your home. I am a 3rd party, reliable source without any ties to a specific solar company. I am here to get you the most accurate, fact-checked information about solar and help you determine if it makes sense for you! How can I help you today?</p>
+        </div>
+        <div class="buttons-container">
+            <button class="btn" id="how-solar-works">How does solar work?</button>
+            <button class="btn" id="save-money">Will Solar save me money on my electric bill?</button>
+            <button class="btn" id="solar-is-free">Is solar really free?</button>
+            <button class="btn" id="other">Other</button>
+        </div>
+        <div class="chat-messages">
+
+        </div>
+
+        <div class="">
+            <p id="response-text"></p>
+        </div>
+
+        <div class="chat-bar">
+            <input type="text" id="chat-input" placeholder="Type your message here...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        let lastClickedButtonId = ''; // Variable to keep track of the last clicked button ID
+
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                lastClickedButtonId = this.id; // Update the last clicked button ID
+                let url = ''; // Define URL based on button clicked
+                if (lastClickedButtonId === 'how-solar-works') {
+                    url = 'how-solar-works/';
+                } else if (lastClickedButtonId === 'save-money') {
+                    url = 'save-money/';
+                } else if (lastClickedButtonId === 'solar-is-free') {
+                    url = 'solar-is-free/';
+                } else {
+                    url = 'other/';
+                }
+                fetch(`/chat/${url}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayMessage(data.response, 'chatbot');
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Updated send button click event to use jQuery AJAX
+        $('#send-btn').click(function(){
+            var message = $('#chat-input').val();
+            if (message.toLowerCase() === 'yes') {
+                displayMessage(message, 'user'); // Display user's message
+                if (lastClickedButtonId) { // Check if a button was previously clicked
+                    $.ajax({
+                        type: 'GET',
+                        url: `${lastClickedButtonId}/`, // Use the last clicked button ID to dynamically change the URL
+                        data: { message: message },
+                        success: function(response) {
+                            displayMessage(response.response, 'chatbot'); // Display bot's response
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                } else {
+                    console.error('No button was previously clicked.'); // Handle case where no button was previously clicked
+                }
+            } else {
+                displayMessage(message, 'user'); // Display user's message
+            }
+            $('#chat-input').val(''); // Clear input after sending message
+        });
+    });
+
+    // Function to display messages in the chat window
+    function displayMessage(message, sender) {
+        const chatMessages = document.querySelector('.chat-messages');
+        const messageElement = document.createElement('p');
+        messageElement.textContent = message;
+        if (sender === 'user') {
+            messageElement.classList.add('user-message');
+        } else {
+            messageElement.classList.add('chatbot-message');
+        }
+        chatMessages.appendChild(messageElement);
+
+        // Automatically scroll to the bottom of the chat messages container
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    </script>
+</body>
+</html>
+
